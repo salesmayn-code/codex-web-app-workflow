@@ -1,7 +1,7 @@
 name = "implementation_worker"
 description = "Complete one narrowly scoped task within assigned file ownership and return reproducible evidence to the phase owner."
 model = "gpt-5.6-luna"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "max"
 sandbox_mode = "workspace-write"
 
 developer_instructions = """

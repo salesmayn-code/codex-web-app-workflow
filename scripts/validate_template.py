@@ -57,16 +57,19 @@ AGENT_EXPECTATIONS: Mapping[str, Mapping[str, object]] = {
     ".codex/agents/phase-owner.toml": {
         "name": "phase_owner",
         "model": "gpt-5.6-terra",
+        "model_reasoning_effort": "xhigh",
         "sandbox_mode": "workspace-write",
     },
     ".codex/agents/implementation-worker.toml": {
         "name": "implementation_worker",
         "model": "gpt-5.6-luna",
+        "model_reasoning_effort": "max",
         "sandbox_mode": "workspace-write",
     },
     ".codex/agents/quality-auditor.toml": {
         "name": "quality_auditor",
         "model": "gpt-5.6-luna",
+        "model_reasoning_effort": "max",
         "sandbox_mode": "read-only",
     },
 }
@@ -195,9 +198,9 @@ def validate_toml(root: Path, reporter: Reporter) -> None:
             reporter.error(f"{config_path} must enable agents with agents.enabled = true")
         if get_nested(config, "model_reasoning_effort") != "xhigh":
             reporter.error(f"{config_path} must set model_reasoning_effort = xhigh")
-        if get_nested(config, "agents.default_subagent_reasoning_effort") != "xhigh":
+        if get_nested(config, "agents.default_subagent_reasoning_effort") != "max":
             reporter.error(
-                f"{config_path} must set agents.default_subagent_reasoning_effort = xhigh"
+                f"{config_path} must set agents.default_subagent_reasoning_effort = max"
             )
 
     for relative_path, expectations in AGENT_EXPECTATIONS.items():
@@ -210,8 +213,6 @@ def validate_toml(root: Path, reporter: Reporter) -> None:
                 reporter.error(
                     f"{relative_path} must set {key} = {expected!r}; found {actual!r}"
                 )
-        if parsed.get("model_reasoning_effort") != "xhigh":
-            reporter.error(f"{relative_path} must set model_reasoning_effort = xhigh")
         instructions = parsed.get("developer_instructions")
         if not isinstance(instructions, str) or len(instructions.strip()) < 80:
             reporter.error(f"{relative_path} needs substantive developer_instructions")
